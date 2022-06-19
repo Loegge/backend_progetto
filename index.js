@@ -17,17 +17,21 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
 app.use(express.json());       // to support JSON-encoded bodies
 app.use(express.urlencoded()); // to support URL-encoded bodies
 
-app.route('/user')
+app.get('/', (req, res) => {
+  res.send('funziona ma hai sbagliato /')
+})
+
+app.route('/subjects')
 
   .get(async (req, res) => {
-    const Users = Parse.Object.extend("Users");
-    const users = new Parse.Query(Users);
+    const Subjects = Parse.Object.extend("Subjects");
+    const subjects = new Parse.Query(Subjects);
+    const name = req.query['name'];
+    console.log(name);
+    subjects.equalTo("name", name);
+    const results = await subjects.find();
 
-    users.equalTo("name", "Luigi");
-    const results = await users.find();
-    console.log("Successfully retrieved " + results.length + " scores.");
-
-    users.get("RJgUojs7VL")
+    subjects.get(results[0].id)
     .then((data) => {
       res.send(data)
     }, (error) => {
@@ -37,15 +41,13 @@ app.route('/user')
 
   .post((req, res) => {
 
-    const Users = Parse.Object.extend("Users");
-    const users = new Users();
+    const Subjects = Parse.Object.extend("Subjects");
+    const subjects = new Subjects();
 
-    users.set("name", req.body.name);
-    users.set("surname", req.body.surname);
-    users.set("email", req.body.email);
-    users.set("token", req.body.token)
+    subjects.set("type", req.body.type);
+    subjects.set("description", req.body.description);
 
-    users.save()
+    subjects.save()
     .then((data) => {
       // Success
       console.log('New object created with objectId: ' + data.id);
@@ -57,15 +59,19 @@ app.route('/user')
 
   .put((req, res) => {
     
-    const Users = Parse.Object.extend("Users");
-    const users = new Users();
+    const Subjects = Parse.Object.extend("Subjects");
+    const subjects = new Parse.Query(Subjects);
+    const name = req.query['name'];
+    console.log(name);
+    subjects.equalTo("name", name);
+    const results = await subjects.find();
 
     // Retrieve the object by id
-    users.get("QHjRWwgEtd")
+    subjects.get(results[0].id)
     .then((data) => {
       // The object was retrieved successfully and it is ready to update.
-      data.set("yearOfBirth", 1998);
-      data.set("emailContact", "a.wed@domain.io");
+      data.set("type", req.body.type);
+      data.set("description", req.body.description);
       data.save();
 
     }, (error) => {
