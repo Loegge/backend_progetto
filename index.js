@@ -17,7 +17,7 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
 app.use(express.json());       // to support JSON-encoded bodies
 app.use(express.urlencoded()); // to support URL-encoded bodies
 
-app.get('/', (req, res) => {
+app.get('/', async (req, res) => {
   res.send('funziona ma hai sbagliato /')
 })
 
@@ -39,7 +39,7 @@ app.route('/subjects')
     });
   })
 
-  .post((req, res) => {
+  .post(async (req, res) => {
 
     const Subjects = Parse.Object.extend("Subjects");
     const subjects = new Subjects();
@@ -57,7 +57,7 @@ app.route('/subjects')
     });
   })
 
-  .put((req, res) => {
+  .put(async (req, res) => {
     
     const Subjects = Parse.Object.extend("Subjects");
     const subjects = new Parse.Query(Subjects);
