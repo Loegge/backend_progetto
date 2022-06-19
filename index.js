@@ -1,11 +1,11 @@
 const Parse = require('parse/node');
 const express = require('express');
 const app = express();
-const port = process.env.PORT || 3000; //prendi la porta di heroku e in locale 3000
+const port = process.env.PORT || 3000;
 
 const APP_ID = 'hkht0oxw04SRMepe1ud05BK8aNpTpSlc8ofCZJfs';
 const JAVASCRIPT_ID = 'UXJ1Fs3aYzm7jRaMhj3f0vQXhPMsXjp7Z0HUefCp';
-Parse.initialize(APP_ID,JAVASCRIPT_ID);
+Parse.initialize(APP_ID, JAVASCRIPT_ID);
 Parse.serverURL='https://parseapi.back4app.com/';
 
 var bodyParser = require('body-parser')
@@ -30,13 +30,12 @@ app.route('/subjects')
     console.log(name);
     subjects.equalTo("name", name);
     const results = await subjects.find();
-
-    subjects.get(results[0].id)
-    .then((data) => {
-      res.send(data)
-    }, (error) => {
-      console.log('no')
-    });
+    try {
+      const result = await subjects.get(results[0].id);
+      res.send(result)
+    } catch(e) {
+      res.send(e);
+    }
   })
 
   .post(async (req, res) => {
@@ -47,14 +46,12 @@ app.route('/subjects')
     subjects.set("type", req.body.type);
     subjects.set("description", req.body.description);
 
-    subjects.save()
-    .then((data) => {
-      // Success
-      console.log('New object created with objectId: ' + data.id);
-    }, (error) => {
-      // Save fails
-      console.log('Failed to create new object, with error code: ' + error.message);
-    });
+    try {
+      await subjects.save();
+      res.send("KIAO");
+    } catch(e) {
+      res.send(e);
+    }
   })
 
   .put(async (req, res) => {
@@ -66,19 +63,16 @@ app.route('/subjects')
     subjects.equalTo("name", name);
     const results = await subjects.find();
 
-    // Retrieve the object by id
-    subjects.get(results[0].id)
-    .then((data) => {
-      // The object was retrieved successfully and it is ready to update.
-      data.set("type", req.body.type);
-      data.set("description", req.body.description);
-      data.save();
-
-    }, (error) => {
-      // The object was not retrieved successfully.
-    });
-
-  })
+    try {
+      const result = await subjects.get(results[0].id)
+      result.set("type", req.body.type);
+      result.set("description", req.body.description);
+      await result.save();
+      res.send("ok");
+    } catch(e) {
+      res.send(e);
+    }
+  });
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
