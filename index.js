@@ -1,7 +1,7 @@
 const Parse = require('parse/node');
 const express = require('express');
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000; //prendi la porta di heroku e in locale 3000
 
 const APP_ID = 'hkht0oxw04SRMepe1ud05BK8aNpTpSlc8ofCZJfs';
 const JAVASCRIPT_ID = 'UXJ1Fs3aYzm7jRaMhj3f0vQXhPMsXjp7Z0HUefCp';

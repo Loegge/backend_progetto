@@ -1,1 +1,1 @@
-GET http://127.0.0.1:3000/user?name=Luig
+GET http://127.0.0.1:3000/subjects?name=Lui
