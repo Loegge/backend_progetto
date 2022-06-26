@@ -1,12 +1,7 @@
-const Parse = require('parse/node');
+const {database} = require('./db.js');
 const express = require('express');
 const app = express();
 const port = process.env.PORT || 3000;
-
-const APP_ID = 'hkht0oxw04SRMepe1ud05BK8aNpTpSlc8ofCZJfs';
-const JAVASCRIPT_ID = 'UXJ1Fs3aYzm7jRaMhj3f0vQXhPMsXjp7Z0HUefCp';
-Parse.initialize(APP_ID, JAVASCRIPT_ID);
-Parse.serverURL='https://parseapi.back4app.com/';
 
 var bodyParser = require('body-parser')
 app.use( bodyParser.json() );       // to support JSON-encoded bodies
@@ -21,59 +16,169 @@ app.get('/', async (req, res) => {
   res.send('funziona ma hai sbagliato /')
 })
 
-app.route('/subjects')
+app.post('/create', async (req, res) => { //create db
+  const query = `
+  create table if not exists users (
+    id integer primary key generated always as identity,
+    name varchar(20) not null,
+    surname varchar(20),
+    description varchar(20)
+  );
+  create table if not exists ads(
+    id integer primary key generated always as identity,
+    type varchar(20) not null,
+    description varchar(20),
+    fk_idUser integer references users(id)
+      on delete cascade
+      on update cascade
+  );`
 
-  .get(async (req, res) => {
-    const Subjects = Parse.Object.extend("Subjects");
-    const subjects = new Parse.Query(Subjects);
-    const name = req.query['name'];
-    console.log(name);
-    subjects.equalTo("name", name);
-    const results = await subjects.find();
-    try {
-      const result = await subjects.get(results[0].id);
-      res.send(result)
-    } catch(e) {
-      res.send(e);
+  try{
+    await database.query(query)
+    res.send('database created');
+  }
+  catch(e){
+    res.status(500).send(e);
+  }
+});
+
+app.post('/drop', async (req, res) => { //drop db
+  const query = `
+  drop table if exists users;
+  drop table if exists ads;
+  `;
+
+  try{
+    await database.query(query);
+    res.send('database dropped');
+  }
+  catch(e){
+    res.status(500).send(e);
+  }
+});
+
+app.post('/show', async (req, res) => { //show db
+  const query = `
+  SELECT *
+  FROM INFORMATION_SCHEMA.tables
+  where table_schema = 'public';
+  `;
+
+  try{
+    const m = await database.query(query);
+    for (let row of m.rows) {
+      console.log(row);
+    }
+  }
+  catch(e){
+    res.status(500).send(e);
+  }
+});
+
+app.route('/ads')
+
+  .get(async (req, res) => { //select
+    if (req.query.type == null) {flag = "";}
+    else flag = `WHERE type = '${req.query.type}'`;
+    const query = `
+    SELECT *
+    FROM ads
+    ${flag}
+    `;
+
+    console.log(query);
+
+    try{
+      const m = await database.query(query);
+      res.json(m);
+    }
+    catch(e){
+      res.status(500).send(e);
     }
   })
 
-  .post(async (req, res) => {
+  .post(async (req, res) => { //insert
+    const query = `
+    insert into ads (type, description)
+    values ('${req.body.type}', '${req.body.description}')
+    `;
 
-    const Subjects = Parse.Object.extend("Subjects");
-    const subjects = new Subjects();
-
-    subjects.set("type", req.body.type);
-    subjects.set("description", req.body.description);
-
-    try {
-      await subjects.save();
-      res.send("KIAO");
-    } catch(e) {
-      res.send(e);
+    try{
+      await database.query(query);
+      res.send('ads insert')
+    }
+    catch(e){
+      res.status(500).send(e);
     }
   })
 
-  .put(async (req, res) => {
-    
-    const Subjects = Parse.Object.extend("Subjects");
-    const subjects = new Parse.Query(Subjects);
-    const name = req.query['name'];
-    console.log(name);
-    subjects.equalTo("name", name);
-    const results = await subjects.find();
+  .put(async (req, res) => { //update
+    const query = `
+    update ads
+    set ${req.body.change} = ${req.body.new}
+    where ${req.body.param} = ${req.body.cond}
+    `;
 
-    try {
-      const result = await subjects.get(results[0].id)
-      result.set("type", req.body.type);
-      result.set("description", req.body.description);
-      await result.save();
-      res.send("ok");
-    } catch(e) {
-      res.send(e);
+    try{
+      await database.query(query);
+      res.send(`modified`)
+    }
+    catch(e){
+      res.status(500).send(e);
     }
   });
 
+  app.route('/users')
+
+  .get(async (req, res) => { //select
+    if (req.query.id == null) {flag = "";}
+    else flag = `WHERE type = '${req.query.id}'`;
+    const query = `
+    SELECT *
+    FROM users
+    ${flag}
+    `;
+
+    try{
+      const m = await database.query(query);
+      res.json(m);
+    }
+    catch(e){
+      res.status(500).send(e);
+    }
+  })
+
+  .post(async (req, res) => { //insert
+    const query = `
+    insert into users (name, surname, description)
+    values ('${req.body.name}', '${req.body.surname}', '${req.body.description}')
+    `;
+
+    console.log(query);
+
+    try{
+      await database.query(query);
+      res.send('user insert')
+    }
+    catch(e){
+      res.status(500).send(e);
+    }
+  })
+
+  .put(async (req, res) => { //update
+    const query = `
+    update users
+    set ${req.body.change} = ${req.body.new}
+    where ${req.body.param} = ${req.body.cond}
+    `;
+    try{
+      await database.query(query);
+      res.send(`modified`)
+    }
+    catch(e){
+      res.status(500).send(e);
+    }
+  });
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
 })

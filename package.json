@@ -12,7 +12,9 @@
   "dependencies": {
     "@react-native-async-storage/async-storage": "^1.17.6",
     "body-parser": "^1.20.0",
+    "dotenv": "^16.0.1",
     "express": "^4.18.1",
-    "parse": "^3.4.2"
+    "pg": "^8.7.3",
+    "pgsql": "^1.0.0"
   }
 }
