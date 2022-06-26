@@ -45,8 +45,8 @@ app.post('/create', async (req, res) => { //create db
 
 app.post('/drop', async (req, res) => { //drop db
   const query = `
-  drop table if exists users;
   drop table if exists ads;
+  drop table if exists users;
   `;
 
   try{

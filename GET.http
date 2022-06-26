@@ -1,4 +1,4 @@
-GET http://127.0.0.1:3000/users
+POST http://127.0.0.1:3000/drop
 content-type: application/json
 
 {
