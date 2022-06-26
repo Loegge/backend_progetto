@@ -22,7 +22,8 @@ app.post('/create', async (req, res) => { //create db
     id integer primary key generated always as identity,
     name varchar(20) not null,
     surname varchar(20),
-    description varchar(20)
+    description varchar(20),
+    token varchar(20)
   );
   create table if not exists ads(
     id integer primary key generated always as identity,
@@ -141,7 +142,7 @@ app.route('/ads')
 
     try{
       const m = await database.query(query);
-      res.json(m);
+      res.jsonp(m);
     }
     catch(e){
       res.status(500).send(e);
