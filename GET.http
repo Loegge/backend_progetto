@@ -1,8 +1,9 @@
-POST http://127.0.0.1:3000/drop
+PUT http://127.0.0.1:3000/users
 content-type: application/json
 
 {
-    "name": "Luigi",
-    "surname": "DAngelo",
-    "description": "descrizione1"
+    "change": "surname",
+    "new": "Dangelo",
+    "param": "id",
+    "cond": 1
 }

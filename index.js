@@ -169,7 +169,7 @@ app.route('/ads')
   .put(async (req, res) => { //update
     const query = `
     update users
-    set ${req.body.change} = ${req.body.new}
+    set ${req.body.change} = '${req.body.new}'
     where ${req.body.param} = ${req.body.cond}
     `;
     try{
