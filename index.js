@@ -81,15 +81,13 @@ app.post('/show', async (req, res) => { //show db
 app.route('/ads')
 
   .get(async (req, res) => { //select
-    if (req.query.type == null) {flag = "";}
-    else flag = `WHERE type = '${req.query.type}'`;
+    if (req.query.field == null) {flag = "";}
+    else flag = `WHERE type = '${req.query.field}'`;
     const query = `
     SELECT *
     FROM ads
     ${flag}
     `;
-
-    console.log(query);
 
     try{
       const m = await database.query(query);
@@ -156,9 +154,7 @@ app.route('/ads')
     insert into users (token, firstName, secondName, email)
     values ('${req.body.token}', '${req.body.firstName}', '${req.body.secondName}', '${req.body.email}')
     `;
-
-    console.log(query);
-
+    
     try{
       await database.query(query);
       res.send('user insert')
