@@ -20,10 +20,10 @@ app.post('/create', async (req, res) => { //create db
   const query = `
   create table if not exists users (
     id integer primary key generated always as identity,
-    name varchar(20) not null,
-    surname varchar(20),
-    description varchar(20),
-    token varchar(20)
+    firstName varchar(20) not null,
+    secondName varchar(20),
+    email varchar(20),
+    token varchar(50)
   );
   create table if not exists ads(
     id integer primary key generated always as identity,
@@ -153,8 +153,8 @@ app.route('/ads')
 
   .post(async (req, res) => { //insert
     const query = `
-    insert into users (name, surname, description)
-    values ('${req.body.name}', '${req.body.surname}', '${req.body.description}')
+    insert into users (token, firstName, secondName, email)
+    values ('${req.body.token}', '${req.body.firstName}', '${req.body.secondName}', '${req.body.email}')
     `;
 
     console.log(query);
