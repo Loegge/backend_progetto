@@ -27,8 +27,10 @@ app.post('/create', async (req, res) => { //create db
   );
   create table if not exists ads(
     id integer primary key generated always as identity,
-    type varchar(20) not null,
+    title varchar(20) not null,
     description varchar(20),
+    field varchar(20),
+    phoneNumber varchar(20),
     fk_idUser integer references users(id)
       on delete cascade
       on update cascade
@@ -100,8 +102,8 @@ app.route('/ads')
 
   .post(async (req, res) => { //insert
     const query = `
-    insert into ads (type, description)
-    values ('${req.body.type}', '${req.body.description}')
+    insert into ads (title, description, field, phoneNumber)
+    values ('${req.body.title}', '${req.body.description}', '${req.body.field}', '${req.body.phoneNumber}')
     `;
 
     try{

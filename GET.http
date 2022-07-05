@@ -1,9 +1,7 @@
-PUT http://127.0.0.1:3000/users
+POST http://127.0.0.1:3000/ads
 content-type: application/json
 
 {
-    "change": "surname",
-    "new": "Dangelo",
-    "param": "id",
-    "cond": 1
+    "type": "matematica",
+    "description": "heiofheiofjweiojfiowejfiwejfiowefjiowejciowerjg9iowerhjfviowejfopwejiofhjweiofjweiofj"
 }
