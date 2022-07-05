@@ -1,4 +1,4 @@
-GET http://127.0.0.1:3000/users
+GET http://127.0.0.1:3000/ads?field=matematica
 content-type: application/json
 
 {

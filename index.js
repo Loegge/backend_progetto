@@ -82,12 +82,14 @@ app.route('/ads')
 
   .get(async (req, res) => { //select
     if (req.query.field == null) {flag = "";}
-    else flag = `WHERE type = '${req.query.field}'`;
+    else flag = `WHERE field = '${req.query.field}'`;
     const query = `
     SELECT *
     FROM ads
     ${flag}
     `;
+
+    console.log(query);
 
     try{
       const m = await database.query(query);
