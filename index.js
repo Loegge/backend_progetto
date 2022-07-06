@@ -28,7 +28,7 @@ app.post('/create', async (req, res) => { //create db
   create table if not exists ads(
     id integer primary key generated always as identity,
     title varchar(50) not null,
-    description varchar(100),
+    description varchar(500),
     field varchar(20),
     phoneNumber varchar(20),
     fk_idUser integer references users(id)
